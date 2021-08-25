@@ -1,9 +1,10 @@
 import { Component } from 'react';
 import { getTodos, updateTodo, addTodo, deleteTodo } from '../fetch-utils';
+import { removeById, replaceById } from '../helpers';
 import TodoItem from './TodoItem';
 
 class Todos extends Component {
-    state = { todos: [], token: '', newTodo: '' }
+    state = { todos: [], token: '', newTodoInput: '' }
 
     async componentDidMount() {
         const token = localStorage.getItem('TOKEN');
@@ -12,31 +13,27 @@ class Todos extends Component {
         this.setState({ todos })
     }
 
-    checkTodo = async (todo, completed, id, user_id) => {
+    checkTodo = async (todo, completed, id) => {
+        const { token, todos } = this.state;
         const updatedTodo = await updateTodo(
-            {id, user_id, todo, completed}, this.state.token
+            {id, todo, completed}, token
         );
-        const unchangedTodos = this.state.todos.filter(item => {
-            return item.id !== id
-        });
-        this.setState({ todos: [...unchangedTodos, ...updatedTodo] });
+        this.setState({ todos: replaceById(todos, updatedTodo[0]) });
     }
 
     handleDeleteTodo = async (id, token) => {
-        const unchangedTodos = this.state.todos.filter(item => {
-            return item.id !== id
-        });
         deleteTodo(id, token);
-        this.setState({ todos: unchangedTodos });
+        this.setState({ todos: removeById(this.state.todos, id) });
     }
 
     handleChange = (e) => {
-        this.setState({ newTodo: e.target.value })
+        this.setState({ newTodoInput: e.target.value })
     }
 
     handleSubmitNewTodo = async () => {
-        const newTodo = await addTodo(this.state.newTodo, this.state.token);
-        this.setState({ todos: [...this.state.todos, ...newTodo], newTodo: '' });
+        const { newTodoInput, token, todos } = this.state;
+        const newTodo = await addTodo(newTodoInput, token);
+        this.setState({ todos: [...todos, newTodo[0]], newTodoInput: '' });
     }
 
     render() {
@@ -44,14 +41,15 @@ class Todos extends Component {
         return (
             <div className='todos-container'>
                 <h1>Todos</h1>
-                <label htmlFor='add-a-todo'>Add a todo</label>
-                <input 
-                    type='text' 
-                    name='add-a-todo' 
-                    value={this.state.newTodo}
-                    onChange={(e) => this.handleChange(e)}
-                />
-                <button onClick={this.handleSubmitNewTodo}>Add new todo</button>
+                <div className='todo-input-container'>
+                    <input 
+                        type='text' 
+                        name='add-a-todo' 
+                        value={this.state.newTodoInput}
+                        onChange={(e) => this.handleChange(e)}
+                    />
+                    <button onClick={this.handleSubmitNewTodo}>Add new todo</button>
+                </div>
                 {
                     todos.map(todo => {
                         return (
@@ -61,7 +59,6 @@ class Todos extends Component {
                                 handleCheck={this.checkTodo}
                                 todo={todo.todo}
                                 completed={todo.completed}
-                                user_id={todo.user_id}
                                 id={todo.id}
                                 token={this.state.token}
                             />

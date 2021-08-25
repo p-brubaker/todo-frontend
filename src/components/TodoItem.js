@@ -3,15 +3,18 @@ import { Component } from 'react';
 class TodoItem extends Component {
 
     render() {
+        const { handleCheck, deleteTodo, todo, id, completed, token } = this.props;
         return (
             <div className='todo-item-container'>
-                <input 
-                    type='checkbox' 
-                    onChange={() => this.props.handleCheck(this.props.todo, this.props.completed, this.props.id, this.props.user_id)} 
-                    checked={this.props.completed}/>
-                <label>{this.props.todo}</label>
+                <div className='todo-item'>
+                    <input 
+                        type='checkbox' 
+                        onChange={() => handleCheck(todo, completed, id)} 
+                        checked={completed}/>
+                    <label>{todo}</label>
+                </div>
                 <button onClick={() => {
-                    this.props.deleteTodo(this.props.id, this.props.token);
+                    deleteTodo(id, token);
                     }
                 }>
                     Delete
