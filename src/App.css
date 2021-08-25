@@ -1,3 +1,7 @@
+html {
+  background-color: wheat;
+}
+
 .todos-container {
   background-image: url('./assets/list-bg.png');
   background-size: cover;
@@ -17,6 +21,28 @@
 }
 
 .todo-item-container {
+  font-family: 'Architects Daughter', 'cursive';
+  width: 60%;
   display: flex;
   margin: 10px;
+  justify-content: space-between;
 }
+
+header {
+  width: 100%;
+  text-align: right;
+}
+
+header a {
+  margin: 5px;
+  color: teal;
+  padding: 3px;
+}
+
+header a.selected {
+  border: solid 1px black;
+}
+
+
+
+
