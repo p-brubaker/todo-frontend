@@ -14,16 +14,19 @@ class Todos extends Component {
     }
 
     checkTodo = async (todo, completed, id) => {
-        const { token, todos } = this.state;
         const updatedTodo = await updateTodo(
-            {id, todo, completed}, token
+            {id, todo, completed}, this.state.token
         );
-        this.setState({ todos: replaceById(todos, updatedTodo[0]) });
+        this.setState((prevState) => (
+           { todos: replaceById(prevState.todos, updatedTodo[0]) }
+        ));
     }
 
     handleDeleteTodo = async (id, token) => {
         deleteTodo(id, token);
-        this.setState({ todos: removeById(this.state.todos, id) });
+        this.setState((prevState) => (
+             { todos: removeById(prevState.todos, id) }
+        ));
     }
 
     handleChange = (e) => {
@@ -31,9 +34,11 @@ class Todos extends Component {
     }
 
     handleSubmitNewTodo = async () => {
-        const { newTodoInput, token, todos } = this.state;
+        const { newTodoInput, token} = this.state;
         const newTodo = await addTodo(newTodoInput, token);
-        this.setState({ todos: [...todos, newTodo[0]], newTodoInput: '' });
+        this.setState((prevState) => (
+            { todos: [...prevState.todos, newTodo[0]], newTodoInput: '' }
+        ));
     }
 
     render() {
