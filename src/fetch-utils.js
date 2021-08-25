@@ -1,4 +1,4 @@
-const URL = 'http://lab-12-user-auth.herokuapp.com'
+const URL = 'https://lab-12-user-auth.herokuapp.com'
 
 export async function authenticate(userInfo, type) {
     const url = `${URL}/auth/${type}`;
